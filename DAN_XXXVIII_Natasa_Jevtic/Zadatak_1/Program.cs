@@ -20,6 +20,7 @@ namespace Zadatak_1
         static EventWaitHandle canStartCharging = new AutoResetEvent(false);
         static Thread[] threadsForTrucks = new Thread[10];
         public static CountdownEvent canAssignmentRoutes = new CountdownEvent(10);
+        static Thread[] threadsForDestination = new Thread[10];
         /// <summary>
         /// This method generates random numbers that represents possible routes of trucks and writes them in file.
         /// </summary>
@@ -126,6 +127,24 @@ namespace Zadatak_1
             }
             Thread routeAssignment = new Thread(RouteAssignment);
             routeAssignment.Start();
+            //creating 10 threads that performs delivery of trucks
+            for (int i = 0; i < threadsForTrucks.Length; i++)
+            {
+                threadsForTrucks[i] = new Thread(trucks[i].Delivery);
+            }
+            //creating 10 threads that represent destinations which waiting for delivery and discharge
+            for (int i = 0; i < threadsForDestination.Length; i++)
+            {
+                threadsForDestination[i] = new Thread(trucks[i].Discharge);
+            }
+            for (int i = 0; i < threadsForDestination.Length; i++)
+            {
+                threadsForDestination[i].Start();
+            }
+            for (int i = 0; i < threadsForTrucks.Length; i++)
+            {
+                threadsForTrucks[i].Start();
+            }
             Console.ReadLine();
         }
     }
