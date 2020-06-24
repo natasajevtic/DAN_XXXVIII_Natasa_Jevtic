@@ -18,7 +18,7 @@ namespace Zadatak_1
         static object locker = new object();
         static EventWaitHandle canStartChoosingRoutes = new AutoResetEvent(false);
         static EventWaitHandle canStartCharging = new AutoResetEvent(false);
-
+        static Thread[] threadsForTrucks = new Thread[10];
         /// <summary>
         /// This method generates random numbers that represents possible routes of trucks and writes them in file.
         /// </summary>
@@ -99,6 +99,15 @@ namespace Zadatak_1
             generateRoutes.Start();
             //waiting for signal that routes are chosen and can start with charging of trucks
             canStartCharging.WaitOne();
+            //creating 10 threads that performs charge of trucks
+            for (int i = 0; i < threadsForTrucks.Length; i++)
+            {
+                threadsForTrucks[i] = new Thread(trucks[i].Charge);
+            }
+            for (int i = 0; i < threadsForTrucks.Length; i++)
+            {
+                threadsForTrucks[i].Start();
+            }
             Console.ReadLine();
         }
     }
