@@ -13,6 +13,7 @@ namespace Zadatak_1
         static SemaphoreSlim semaphor = new SemaphoreSlim(2, 2);
         static Random r = new Random();
         static Barrier barrier = new Barrier(2);
+        public static ManualResetEvent canStartDelivery = new ManualResetEvent(false);
         /// <summary>
         /// This method simulates charging of trucks two by two.
         /// </summary>
@@ -26,6 +27,8 @@ namespace Zadatak_1
             Thread.Sleep(TimeOfCharge);
             Console.WriteLine("{0} is charged and charging lasted {1} miliseconds.", Name, TimeOfCharge);
             semaphor.Release();
+            //sending a signal that truck is charged
+            Program.canAssignmentRoutes.Signal();
         }       
 
         public void Delivery() { }
